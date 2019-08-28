@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>简易聊天室</title>
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<style type="text/css">
+		#memList>ul{
+			width: 200px;
+			display: inline-block;
+			height: 200px;
+			overflow: auto;
+			padding-left: 20px;
+		}
+		#memList>ul>li{
+			list-style: none;
+			cursor: pointer;
+			height: 30px;
+			line-height: 30px;
+		}
+		#memList>ul>li:hover{
+			background-color: #ccc;
+			color: #fa2424;
+		}
+		.sysMsg{
+			color:#fa2424;
+		}
+		.list-group{
+			height: 300px;
+			overflow: auto;
+		}
+		#logout{
+			font-size: 14px;
+			font-family: 楷体;
+		}
+		#users>li:first-child{
+			color: green;
+		}
+		#friends>li:first-child{
+			color: blue;
+		}
+		#memList em{
+			color: black;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="well">聊天室 <small id="name"><%=name %></small><button id="logout">退出</button></h1>
+
+		<div id="memList">
+			<ul id="users">
+				<li>当前在线用户(<em id="unum"></em>)</li>
+			</ul>
+			<ul id="friends">
+				<li>好友列表(<em id="fnum"></em>)</li>
+			</ul>
+		</div>
+
+		<ul class='list-group'>
+			<li class="list-group-item">还没有人发言...</li>
+		</ul>
+	</div>
+
+	<nav class="navbar navbar-inverse navbar-fixed-bottom">
+		<div class="container">
+			<div class="navbar-form navbar-left">
+				<div class="form-group">
+					<input type="text" id="msg" class="form-control" placeholder="说点什么...">
+					<button id="btn" class="btn btn-deafult">发言</button>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/js/jquery.min.js"></script>
+
+	<script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

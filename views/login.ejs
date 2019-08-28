@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>聊天室登录</title>
+	<style>
+        .tips{
+            font-size: 28px;
+            font-family: "楷体";
+            padding: 10px;
+        }
+        .contentMain{
+            width: 600px;
+            height: 500px;
+            position:absolute;
+            left:35%;
+            top:40%;
+            z-index: 999;
+        }
+        .prompt{
+        	color:#fa2424;
+        }
+    </style>
+   	<script src="https://cdn.staticfile.org/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="css/bootstrap.css" type="text/css">
+</script>
+</head>
+<body>
+	<div class="loginImg">
+    	<img src="images/mm031.jpg" style="width: 100%;"/>
+	</div>
+	<div class="contentMain">
+	    <div class="row tips" style="color:#fb0">聊天室登录 </div>
+	    <form action="/loginAct" method="post" onsubmit="return chkForm()">
+		    <div class="row form-group">
+		        <span class="col-md-6">
+		            <input type="text" name="tel" class="form-control" placeholder="手机号" maxlength="11" required>
+		        </span>
+		        <span class="col-md-6">
+		            <input type="password" name="pwd" class="form-control" placeholder="密码" required>
+		        </span>
+		        <span class="col-md-3">
+		            <button class="btn btn-default" id="login">登录</button>
+		            <span id="prompt"></span>
+		        </span>
+		        <span class="col-md-3">
+		            <button class="btn btn-default" id="reg">还没账号？点击注册</button>
+		        </span>
+		    </div>
+	    </form>
+	</div>
+	<script type="text/javascript" src="js/login.js"></script>
+</body>
+</html>

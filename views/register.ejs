@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>聊天室注册</title>
+	<style>
+        .tips{
+            font-size: 28px;
+            font-family: "楷体";
+            padding: 10px;
+        }
+        .contentMain{
+            width: 600px;
+            height: 500px;
+            position:absolute;
+            left:35%;
+            top:40%;
+            z-index: 999;
+        }
+        .prompt{
+        	color:#fa2424;
+        }
+    </style>
+   	<script src="https://cdn.staticfile.org/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="css/bootstrap.css" type="text/css">
+</script>
+</head>
+<body>
+	<div class="loginImg">
+    	<img src="images/mm020.jpg" style="width: 100%;">
+	</div>
+	<div class="contentMain">
+	    <div class="row tips" style="color:#fb0">聊天室注册 </div>
+	    <form action="/regAct" method="post" onsubmit="return chkForm()">
+		    <div class="row form-group">
+		        <span class="col-md-6">
+		            <input type="text" name="name" class="form-control" placeholder="昵称" onblur="check(this.name)">
+		            <span id="np" class="prompt">* 必填项,请输入用户名(3-12位)</span>
+		        </span>
+		        <span class="col-md-6">
+		            <input type="text" name="tel" class="form-control" placeholder="手机号" onblur="check(this.name)" maxlength="11">
+		            <span id="tp" class="prompt">* 必填项,请输入正确手机号</span>
+		        </span>
+		        <span class="col-md-6">
+		            <input type="password" name="pwd" class="form-control" placeholder="密码" onblur="check(this.name)">
+		            <span id="pp" class="prompt">* 必填项,请输入6-12位的密码</span>
+		        </span>
+		        <span class="col-md-6">
+		            <input type="password" name="repwd" class="form-control" placeholder="确认密码" onblur="check(this.name)">
+		            <span id="rpp" class="prompt">* 必填项,请再次输入密码</span>
+		        </span>
+		        <span class="col-md-3">
+		            <button id='reg' class="btn btn-default">注册</button>
+		        </span>
+		        <span class="col-md-3">
+		            <button class="btn btn-default" id="login">已有账号？点击登录</button>
+		        </span>
+		    </div>
+	    </form>
+	</div>
+   	<script src="js/register.js" text="text/javascript"></script>
+</body>
+</html>
