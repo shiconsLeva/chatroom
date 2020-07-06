@@ -1,15 +1,17 @@
 import express, {static} from 'express'
-let app = express()
-let server = require('http').Server(app)
+import session from 'express-session'
+import {createConnection} from 'mysql'
 
 // POST数据解析模块
-import { urlencoded } from 'body-parser'
+import {urlencoded} from 'body-parser'
+
+let app = express()
+let server = require('http').Server(app)
 app.use(urlencoded({
 	extended: false
 }))
 
 // 启用session
-import session from 'express-session'
 app.use(session({
 	secret: '000000',
 	resave: true,
@@ -18,7 +20,6 @@ app.use(session({
 }))
 
 // 连接数据库
-import { createConnection } from 'mysql'
 let connection = createConnection({
 	host: 'localhost',
 	port: 3306,
@@ -36,16 +37,16 @@ app.set('view engine', 'ejs')
 app.use(static('./public'))
 
 // 注册页面
-app.get('/regPage', function(req, res) {
+app.get('/regPage', (req, res) => {
 	res.render('register.ejs')
 })
 
 // 注册操作
-app.post('/regAct', function(req, res) {
+app.post('/regAct', (req, res) => {
 	let values = req.body
 	let sql = 'INSERT INTO `user` VALUES(0,?,?,?)'
 	let params = [values.name, values.tel, values.pwd]
-	connection.query(sql, params, function(error, result) {
+	connection.query(sql, params, (error, result) => {
 		if (result && result.affectedRows) {
 			// 注册成功,进入首页
 			req.session.name = values.name
@@ -59,21 +60,21 @@ app.post('/regAct', function(req, res) {
 })
 
 // 登录页面
-app.get('/loginPage', function(req, res) {
+app.get('/loginPage', (req, res) => {
 	res.render('login.ejs')
 })
 
 // 登录操作
-app.post('/loginAct', function(req, res) {
+app.post('/loginAct', (req, res) => {
 	let sql = 'SELECT `name` FROM `user` WHERE `tel`="' + req.body.tel + '"'
-	connection.query(sql, function(error, result) {
+	connection.query(sql, (error, result) => {
 		req.session.name = result[0].name
 		res.redirect('/')
 	})
 })
 
 // AJAX验证注册及登录信息
-app.use('/check', function(req, res) {
+app.use('/check', (req, res) => {
 	switch (req.path) {
 		// 验证注册用户名
 		case '/name':
@@ -93,7 +94,7 @@ app.use('/check', function(req, res) {
 			break
 	}
 	// 从数据库获取相应信息
-	connection.query(sql, function(error, result) {
+	connection.query(sql, (error, result) => {
 		let str = JSON.stringify(result)
 		if (str.length == 2) {
 			res.end('0')
@@ -104,13 +105,13 @@ app.use('/check', function(req, res) {
 })
 
 // 退出登录
-app.get('/logout', function(req, res) {
+app.get('/logout', (req, res) => {
 	delete req.session.name
 	res.redirect('/')
 })
 
 // 进入首页
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
 	if (req.session.name != null) {
 		res.render('index.ejs', {
 			'name': req.session.name
@@ -123,9 +124,9 @@ app.get('/', function(req, res) {
 // 监听客户端的连接
 let sockets = []
 let users = []
-io.on('connection', function(socket) {
-	// 监听客户端的登录
-	socket.on('login', function(name) {
+io.on('connection', socket => {
+ // 监听客户端的登录
+	socket.on('login', name => {
 		// 发送新登录客户的用户名
 		for (let i in sockets) {
 			sockets[i].emit('newUser', name)
@@ -142,7 +143,7 @@ io.on('connection', function(socket) {
 		socket.emit('users', users)
 		// 发送好友信息列表
 		let sql = 'SELECT `friends` FROM `friends` WHERE `user`="' + name + '"'
-		connection.query(sql, function(error, result) {
+		connection.query(sql, (error, result) => {
 			let friends = []
 			for (let i in result) {
 				friends.push(result[i].friends)
@@ -155,7 +156,7 @@ io.on('connection', function(socket) {
 		console.log(name + '连接成功')
 	})
 	// 监听客户端发送的消息
-	socket.on('clientOut', function(clientMsg) {
+	socket.on('clientOut', clientMsg => {
 		console.log(clientMsg)
 		let name = clientMsg.name
 		let msg = clientMsg.msg
@@ -186,10 +187,10 @@ io.on('connection', function(socket) {
 	})
 
 	// 加好友事件
-	socket.on('addFri', function(name) {
+	socket.on('addFri', name => {
 		// 验证好友是否存在
 		let sql = 'SELECT * FROM `friends` WHERE `user`="' + socket['name'] + '" AND `friends`="' + name + '"'
-		connection.query(sql, function(error, result) {
+		connection.query(sql, (error, result) => {
 			let str = JSON.stringify(result)
 			if (str.length != 2) {
 				socket.emit('friErr', '好友已存在!')
@@ -197,7 +198,7 @@ io.on('connection', function(socket) {
 				// 请求
 				sockets[name].emit('addFri', socket['name'])
 				// 回复
-				sockets[name].on('reply', function(reply) {
+				sockets[name].on('reply', reply => {
 					// console.log(reply)
 					socket.emit('reply', {
 						'reply': reply,
@@ -208,12 +209,12 @@ io.on('connection', function(socket) {
 						// 添加好友信息到数据库
 						let sql = 'INSERT INTO `friends` VALUES(?,?)'
 						let params = [socket['name'], name]
-						connection.query(sql, params, function(error, result) {
+						connection.query(sql, params, (error, result) => {
 							if (result.affectedRows) {
 								// 添加好友信息到数据库
 								let sql = 'INSERT INTO `friends` VALUES(?,?)'
 								let params = [name, socket['name']]
-								connection.query(sql, params, function(error, result) {
+								connection.query(sql, params, (error, result) => {
 									// 发送添加结果
 									socket.emit('addFriRes', {
 										'result': result.affectedRows,
@@ -242,7 +243,7 @@ io.on('connection', function(socket) {
 	})
 
 	// 监听客户端的断开
-	socket.on('disconnect', function() {
+	socket.on('disconnect', () => {
 		let name = socket['name']
 		console.log(name + '断开连接')
 		delete sockets[name]
@@ -253,7 +254,7 @@ io.on('connection', function(socket) {
 		// 	}
 		// }
 
-		// users.forEach(function(ele,index,arr){
+		// users.forEach((ele,index,arr) =>{
 		// 	if (ele==name) {
 		// 		arr.splice(index,1)
 		// 	}
@@ -274,6 +275,6 @@ io.on('connection', function(socket) {
 	})
 })
 
-server.listen(3000, function() {
-	console.log('服务器已启动')
+server.listen(3000, () {
+	console =>.log('服务器已启动')
 })
